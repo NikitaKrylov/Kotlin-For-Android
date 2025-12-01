@@ -59,4 +59,12 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+    implementation(libs.retrofit)
+    implementation(libs.logging.interceptor)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.okhttp)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.converter.kotlinx.serialization.json)
 }

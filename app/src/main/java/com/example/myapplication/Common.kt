@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,17 +18,17 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun HeaderIconButton(
+    @DrawableRes
     iconRes: Int,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .background(Color.White)
             .clickable(onClick = onClick)
             .size(40.dp)
-            .then(modifier)
     ) {
         Icon(
             painter = painterResource(iconRes),

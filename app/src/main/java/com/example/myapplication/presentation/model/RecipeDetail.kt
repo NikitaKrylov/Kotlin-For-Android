@@ -1,4 +1,4 @@
-package com.example.myapplication.data
+package com.example.myapplication.presentation.model
 
 data class RecipeDetail(
     val id: Int,

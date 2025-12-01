@@ -1,14 +1,12 @@
-package com.example.myapplication.detail
+package com.example.myapplication.presentation.detail
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.R
-import com.example.myapplication.data.Ingredient
-import com.example.myapplication.data.RecipeDetail
-import com.example.myapplication.data.RecipeIngredient
+import com.example.myapplication.presentation.model.Ingredient
+import com.example.myapplication.presentation.model.RecipeDetail
+import com.example.myapplication.presentation.model.RecipeIngredient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.publishOn
 import kotlinx.coroutines.flow.update
 import kotlin.random.Random
 
@@ -21,7 +19,7 @@ sealed interface RecipeDetailUiState {
 }
 
 class RecipeDetailViewModel : ViewModel() {
-    val mutableState = MutableStateFlow<RecipeDetailUiState>(RecipeDetailUiState.Loading)
+    private val mutableState = MutableStateFlow<RecipeDetailUiState>(RecipeDetailUiState.Loading)
     val state = mutableState.asStateFlow()
 
     init {

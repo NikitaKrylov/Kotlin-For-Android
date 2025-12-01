@@ -1,16 +1,13 @@
-package com.example.myapplication.home
+package com.example.myapplication.presentation.home
 
-import android.preference.PreferenceActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,9 +19,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.isTraceInProgress
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,15 +31,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.myapplication.HeaderIconButton
 import com.example.myapplication.R
-import com.example.myapplication.data.RecipePreview
+import com.example.myapplication.presentation.model.RecipePreview
 import kotlin.random.Random
 
 
@@ -51,10 +55,11 @@ data class IngredientItem(
 )
 
 @Composable
-fun HomeScreen(
+internal fun HomeScreen(
     navigateToDetailRecipe: (Int) -> Unit,
     viewModel: HomeViewModel = viewModel(),
 ) {
+    val state = viewModel.homeScreenState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -63,23 +68,12 @@ fun HomeScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        val primaryRecipes = remember {
-            List(5) {
-                RecipePreview(
-                    id = Random.nextInt(),
-                    imageRes = R.drawable.food_image,
-                    title = "Stuffed eggplants with salad",
-                    category = "Pizza"
-                )
-            }
-        }
-
         val ingredients = remember {
             List(5) {
                 IngredientItem(
                     id = Random.nextInt(),
                     imageRes = R.drawable.image_22,
-                    name = "Hui"
+                    name = "авпва"
                 )
             }
         }
@@ -99,7 +93,7 @@ fun HomeScreen(
                 .padding(top = 20.dp)
                 .fillMaxWidth()
         ) {
-            items(primaryRecipes) { recipe ->
+            items(state.value) { recipe ->
                 PrimaryRecipeItem(
                     imageRes = recipe.imageRes,
                     name = recipe.title,
@@ -133,6 +127,10 @@ fun HomeScreen(
                 )
             }
         }
+
+        Button(onClick = { viewModel.getUIMeals() }) {
+            Text("Нажми на меня")
+        }
     }
 }
 
@@ -145,7 +143,7 @@ private val linearGradientBlack = Brush.verticalGradient(
 
 @Composable
 private fun PrimaryRecipeItem(
-    imageRes: Int,
+    imageRes: String?,
     name: String,
     category: String,
     onClick: () -> Unit,
@@ -159,13 +157,13 @@ private fun PrimaryRecipeItem(
             .size(190.dp, 260.dp)
             .then(modifier)
     ) {
-        Image(
-            painter = painterResource(imageRes),
-            contentDescription = null,
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageRes)
+                .crossfade(true)
+                .build(),
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-
+            contentDescription = null,
         )
 
         Text(
