@@ -7,6 +7,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import retrofit2.http.Query
 
 
 private const val BASE_URL =
@@ -43,5 +44,9 @@ internal interface FoodService {
 
     @GET("random.php")
     suspend fun getRandomMeal(): MealsResponse
+
+
+    @GET("lookup.php")
+    suspend fun getRecipeById(@Query("i") id: String): MealsResponse
 
 }

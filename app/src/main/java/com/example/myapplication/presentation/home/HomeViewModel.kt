@@ -3,9 +3,6 @@ package com.example.myapplication.presentation.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil3.ImageLoader
-import coil3.disk.DiskCache
-import coil3.request.CachePolicy
 import com.example.myapplication.data.FoodApi
 import com.example.myapplication.data.MealDataModel
 import com.example.myapplication.data.MealsResponse
@@ -40,7 +37,7 @@ internal class HomeViewModel : ViewModel() {
     private fun MealDataModel.toUiModel(): RecipePreview =
         with(this) {
             RecipePreview(
-                id = idMeal.toInt(),
+                id = idMeal,
                 imageRes = strMealThumb,
                 category = strCategory.orEmpty(),
                 title = strMeal.orEmpty()

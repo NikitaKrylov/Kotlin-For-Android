@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.myapplication.HeaderIconButton
 import com.example.myapplication.R
 import com.example.myapplication.presentation.model.Ingredient
@@ -69,15 +72,18 @@ private fun RecipeDetail(
                     .padding(horizontal = 24.dp)
             )
         }
-    ) { padding ->
+    ) { paddings ->
         Column(
             modifier = Modifier
-                .padding(padding)
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
         ) {
-            Image(
-                painter = painterResource(R.drawable.food_image),
+
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(state.value.imageRes)
+                    .crossfade(true)
+                    .build(),
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
