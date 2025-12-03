@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.myapplication.Routes
 import com.example.myapplication.data.locale.MealsDao
+import com.example.myapplication.data.locale.RecipeEntity
 import com.example.myapplication.data.remote.FoodApi
 import com.example.myapplication.data.remote.MealDataModel
 import com.example.myapplication.presentation.model.RecipeDetail
@@ -36,25 +37,31 @@ class RecipeDetailViewModel @Inject constructor(
     private val mutableState = MutableStateFlow<RecipeDetailUiState>(RecipeDetailUiState.Loading)
     val state = mutableState.asStateFlow()
 
-
-    private suspend fun getRemoteRecipe(): MealDataModel? {
-        return FoodApi.retrofitService.getRecipeById(route.id).meals?.firstOrNull()
-    }
-
     init {
         viewModelScope.launch {
-            val recipe = getRemoteRecipe() ?: return@launch
+            val recipe = getLocaleRecipe(route.id) ?: getRemoteRecipe(route.id)?.also {
+                writeCache(it)
+            } ?: return@launch
 
             mutableState.update {
                 RecipeDetailUiState.Recipe(
-                    value = recipe.toUiModel()
+                    value = recipe
                 )
             }
-
         }
-
     }
 
+    private  suspend fun getLocaleRecipe(id: String): RecipeDetail? {
+        return mealsDao.getById(id)?.toUiModel()
+    }
+
+    private suspend fun writeCache(detail: RecipeDetail) {
+        mealsDao.insertAll(detail.toEntity())
+    }
+
+    private suspend fun getRemoteRecipe(id: String): RecipeDetail? {
+        return FoodApi.retrofitService.getRecipeById(id).meals?.firstOrNull()?.toUiModel()
+    }
 
     private fun MealDataModel.toUiModel(): RecipeDetail {
         return RecipeDetail(
@@ -65,4 +72,23 @@ class RecipeDetailViewModel @Inject constructor(
             ingredients = emptyList()
         )
     }
+}
+
+private fun RecipeDetail.toEntity(): RecipeEntity {
+    return RecipeEntity(
+        idMeal = id,
+        strMeal = title,
+        strCategory = category,
+        strMealThumb = imageRes,
+    )
+}
+
+private fun RecipeEntity.toUiModel(): RecipeDetail {
+    return RecipeDetail(
+        id = this.idMeal,
+        imageRes = strMealThumb.orEmpty(),
+        category = strCategory.orEmpty(),
+        title = strMeal.orEmpty(),
+        ingredients = emptyList(),
+    )
 }
