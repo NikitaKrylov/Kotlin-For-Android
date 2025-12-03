@@ -76,6 +76,7 @@ private fun RecipeDetail(
     ) { paddings ->
         Column(
             modifier = Modifier
+                .padding(paddings)
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
         ) {
@@ -153,7 +154,7 @@ fun Body(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Ingreditnts",
+                text = "Ingredients",
                 fontWeight = FontWeight.Bold,
                 fontSize = 21.sp
             )

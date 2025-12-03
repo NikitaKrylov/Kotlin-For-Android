@@ -1,5 +1,6 @@
 package com.example.myapplication.data.remote
 
+import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import kotlinx.serialization.json.Json

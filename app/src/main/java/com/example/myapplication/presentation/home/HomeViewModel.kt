@@ -3,9 +3,11 @@ package com.example.myapplication.presentation.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.data.converters.DataConverter
 import com.example.myapplication.data.remote.FoodApi
 import com.example.myapplication.data.remote.MealDataModel
 import com.example.myapplication.data.remote.MealsResponse
+import com.example.myapplication.data.repository.DataRepository
 import com.example.myapplication.presentation.model.RecipePreview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
@@ -19,7 +21,10 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-internal class HomeViewModel @Inject constructor() : ViewModel() {
+internal class HomeViewModel @Inject constructor(
+    private val converter: DataConverter,
+    private val repository: DataRepository,
+) : ViewModel() {
 
     private val _homeScreenState = MutableStateFlow<List<RecipePreview>>(listOf())
     val homeScreenState = _homeScreenState.asStateFlow()
@@ -33,37 +38,15 @@ internal class HomeViewModel @Inject constructor() : ViewModel() {
             val allMeals: List<RecipePreview> = getRecipes()
                 .mapNotNull { it.meals }
                 .flatten()
-                .map { it.toUiModel() }
+                .map { converter.mealDataModelToPreview(it) }
             _homeScreenState.value = allMeals
             Log.d("FoodDebug", "${allMeals.size}")
         }
     }
 
 
-    private fun MealDataModel.toUiModel(): RecipePreview =
-        with(this) {
-            RecipePreview(
-                id = idMeal,
-                imageRes = strMealThumb,
-                category = strCategory.orEmpty(),
-                title = strMeal.orEmpty()
-            )
-        }
-
     private suspend fun getRecipes(): List<MealsResponse> {
-        // Список Deferred объектов
-        val results = mutableListOf<Deferred<MealsResponse>>()
-
-        // Создаем 10 асинхронных запросов
-        repeat(10) {
-            val deferred = viewModelScope.async(Dispatchers.IO) {
-                FoodApi.retrofitService.getRandomMeal()
-            }
-            results.add(deferred)
-        }
-
-        // Ждем завершения всех запросов и собираем результаты
-        return results.awaitAll()
+        return repository.getMeals()
     }
 
 }

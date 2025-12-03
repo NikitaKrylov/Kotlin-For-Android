@@ -3,7 +3,7 @@ package com.example.myapplication.data.remote
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class MealDataModel(
+data class MealDataModel(
     val idMeal: String,
     val strMeal: String? = null,
     val strMealAlternate: String? = null,
