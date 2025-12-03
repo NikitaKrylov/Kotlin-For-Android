@@ -3,27 +3,33 @@ package com.example.myapplication.presentation.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.data.FoodApi
-import com.example.myapplication.data.MealDataModel
-import com.example.myapplication.data.MealsResponse
+import com.example.myapplication.data.remote.FoodApi
+import com.example.myapplication.data.remote.MealDataModel
+import com.example.myapplication.data.remote.MealsResponse
 import com.example.myapplication.presentation.model.RecipePreview
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-internal class HomeViewModel : ViewModel() {
+
+@HiltViewModel
+internal class HomeViewModel @Inject constructor() : ViewModel() {
 
     private val _homeScreenState = MutableStateFlow<List<RecipePreview>>(listOf())
     val homeScreenState = _homeScreenState.asStateFlow()
 
-    fun getUIMeals() {
+    init {
+        getUIMeals()
+    }
+
+    private fun getUIMeals() {
         viewModelScope.launch {
-            delay(3000)
             val allMeals: List<RecipePreview> = getRecipes()
                 .mapNotNull { it.meals }
                 .flatten()

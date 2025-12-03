@@ -4,20 +4,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.example.myapplication.R
 import com.example.myapplication.Routes
-import com.example.myapplication.data.FoodApi
-import com.example.myapplication.data.MealDataModel
-import com.example.myapplication.data.MealsResponse
-import com.example.myapplication.presentation.model.Ingredient
+import com.example.myapplication.data.locale.MealsDao
+import com.example.myapplication.data.remote.FoodApi
+import com.example.myapplication.data.remote.MealDataModel
 import com.example.myapplication.presentation.model.RecipeDetail
-import com.example.myapplication.presentation.model.RecipeIngredient
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.concurrent.timerTask
-import kotlin.random.Random
+import javax.inject.Inject
 
 
 sealed interface RecipeDetailUiState {
@@ -27,8 +24,11 @@ sealed interface RecipeDetailUiState {
     ) : RecipeDetailUiState
 }
 
-class RecipeDetailViewModel constructor(
-        savedStateHandle: SavedStateHandle,
+
+@HiltViewModel
+class RecipeDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val mealsDao: MealsDao,
 ): ViewModel() {
 
     private val route = savedStateHandle.toRoute<Routes.RecipeDetail>()

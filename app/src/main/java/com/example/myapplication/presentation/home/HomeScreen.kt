@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -56,7 +57,7 @@ data class IngredientItem(
 @Composable
 internal fun HomeScreen(
     navigateToDetailRecipe: (String) -> Unit,
-    viewModel: HomeViewModel = viewModel(),
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state = viewModel.homeScreenState.collectAsState()
 
@@ -125,10 +126,6 @@ internal fun HomeScreen(
                     onClick = {  },
                 )
             }
-        }
-
-        Button(onClick = { viewModel.getUIMeals() }) {
-            Text("Нажми на меня")
         }
     }
 }

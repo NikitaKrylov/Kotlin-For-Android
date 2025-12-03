@@ -1,4 +1,4 @@
-package com.example.myapplication.data
+package com.example.myapplication.data.remote
 
 import retrofit2.Retrofit
 import retrofit2.http.GET

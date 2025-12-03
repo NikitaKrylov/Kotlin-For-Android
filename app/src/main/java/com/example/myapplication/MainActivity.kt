@@ -26,7 +26,10 @@ import androidx.navigation3.runtime.entryProvider
 import com.example.myapplication.presentation.detail.RecipeDetailScreen
 import com.example.myapplication.presentation.home.HomeScreen
 import com.example.myapplication.presentation.theme.MyApplicationTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 
